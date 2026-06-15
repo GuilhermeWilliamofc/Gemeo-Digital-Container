@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gêmeo Digital – Analytics & Previsão</title>
-    <meta name="description" content="Painel de analytics do Gêmeo Digital: previsão térmica, saúde do sistema e detecção de anomalias em tempo real." />
+    <title>TermoGuard – Previsão e Saúde</title>
+    <meta name="description" content="TermoGuard: previsões e saúde operacional do gêmeo digital do reator térmico." />
 
     <!-- Fontes e Ícones -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
@@ -25,8 +25,8 @@
       <div class="logo-area">
         <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
         <div>
-          <h1>Gêmeo Digital – Reator Térmico</h1>
-          <div class="reactor-location">Usina Nuclear Angra II • Setor de Geração Térmica • Reator #AN2-R4</div>
+          <h1>TermoGuard</h1>
+          <div class="reactor-location">Gêmeo digital do reator térmico • Angra II • Reator #AN2-R4</div>
         </div>
         <span class="badge-live">Analytics</span>
       </div>
@@ -68,7 +68,7 @@
       <section class="anl-section" id="section-forecast">
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-forecast">query_stats</span>
-          <h2>Previsão Térmica</h2>
+          <h2>Previsão térmica <span class="info-dot material-icons-round" title="Indica para onde a temperatura deve ir nos próximos segundos. Use para agir antes de virar alerta.">info</span></h2>
           <div class="section-badge" id="alerts-badge" style="display:none;">0</div>
         </div>
 
@@ -79,7 +79,7 @@
           <div class="forecast-card forecast-now" title="Leitura atual do sensor de temperatura do líquido">
             <div class="forecast-card-header">
               <span class="material-icons-round fc-icon">thermostat</span>
-              <span class="fc-label">Temp. do Líquido</span>
+              <span class="fc-label">Temperatura <span class="info-dot material-icons-round" title="Leitura atual do fluido no reator.">info</span></span>
             </div>
             <div class="forecast-kpi-value kpi-stable" id="anl-temp-now">--.- °C</div>
             <div class="forecast-card-footer">
@@ -92,7 +92,7 @@
           <div class="forecast-card" id="anl-temp-10" title="Temperatura estimada em 10 segundos">
             <div class="forecast-card-header">
               <span class="material-icons-round fc-icon">timer_10</span>
-              <span class="fc-label">Previsto em 10s</span>
+              <span class="fc-label">Em 10s <span class="info-dot material-icons-round" title="Estimativa curta. Útil para perceber mudanças imediatas.">info</span></span>
             </div>
             <div class="forecast-kpi-value kpi-stable">--.- °C</div>
             <div class="forecast-delta delta-flat">+0.0°</div>
@@ -102,7 +102,7 @@
           <div class="forecast-card" id="anl-temp-30" title="Temperatura estimada em 30 segundos">
             <div class="forecast-card-header">
               <span class="material-icons-round fc-icon">timer_30</span>
-              <span class="fc-label">Previsto em 30s</span>
+              <span class="fc-label">Em 30s <span class="info-dot material-icons-round" title="Estimativa de curto prazo, boa para avaliar tendência.">info</span></span>
             </div>
             <div class="forecast-kpi-value kpi-stable">--.- °C</div>
             <div class="forecast-delta delta-flat">+0.0°</div>
@@ -112,7 +112,7 @@
           <div class="forecast-card" id="anl-temp-60" title="Temperatura estimada em 60 segundos">
             <div class="forecast-card-header">
               <span class="material-icons-round fc-icon">timer</span>
-              <span class="fc-label">Previsto em 60s</span>
+              <span class="fc-label">Em 60s <span class="info-dot material-icons-round" title="Estimativa de um minuto. Quanto mais distante, maior a incerteza.">info</span></span>
             </div>
             <div class="forecast-kpi-value kpi-stable">--.- °C</div>
             <div class="forecast-delta delta-flat">+0.0°</div>
@@ -122,18 +122,18 @@
         <!-- Painel de Tendência -->
         <div class="trend-panel">
           <div class="trend-block">
-            <div class="trend-header">Tendência Atual</div>
+            <div class="trend-header">Tendência <span class="info-dot material-icons-round" title="Mostra se o sistema está aquecendo, resfriando ou estabilizado.">info</span></div>
             <div class="trend-display">
               <span class="material-icons-round trend-icon trend-stable" id="anl-trend-icon">trending_flat</span>
               <span class="trend-label trend-stable" id="anl-trend-label">Estável</span>
             </div>
           </div>
           <div class="trend-block">
-            <div class="trend-header">Taxa de Variação</div>
+            <div class="trend-header">Velocidade <span class="info-dot material-icons-round" title="Quanto a temperatura muda por segundo. Valores altos pedem atenção.">info</span></div>
             <div class="trend-meta-val" id="anl-slope-val">+0.000 °C/s</div>
           </div>
           <div class="trend-block">
-            <div class="trend-header">Confiança da Previsão (R²)</div>
+            <div class="trend-header">Confiança <span class="info-dot material-icons-round" title="Qualidade matemática da previsão. Quanto maior, mais confiável.">info</span></div>
             <div class="trend-meta-val" id="anl-r2-val">-- %</div>
           </div>
         </div>
@@ -142,10 +142,10 @@
       <!-- ════════════════════════════════
            Seção 2 – Sensores Físicos e Ambientais
       ═════════════════════════════════ -->
-      <section class="anl-section" id="section-sensors">
+      <section class="anl-section secondary-section" id="section-sensors">
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-forecast" style="color:#34D399">sensors</span>
-          <h2>Sensores Físicos e Ambientais</h2>
+          <h2>Dados técnicos <span class="info-dot material-icons-round" title="Informações de apoio para análise detalhada. Não precisam ser acompanhadas o tempo todo.">info</span></h2>
         </div>
         <div class="forecast-kpi-grid">
 
@@ -230,7 +230,7 @@
 
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-health">favorite</span>
-          <h2>Saúde do Sistema</h2>
+          <h2>Saúde do sistema <span class="info-dot material-icons-round" title="Resumo de estabilidade, esforço do controle e proximidade da temperatura desejada.">info</span></h2>
         </div>
 
         <div class="health-layout">
@@ -260,7 +260,7 @@
             <div class="health-factor-item">
               <div class="hf-header">
                 <span class="material-icons-round hf-icon">waves</span>
-                <span class="hf-label">Estabilidade da Temperatura</span>
+                <span class="hf-label">Temperatura estável <span class="info-dot material-icons-round" title="Avalia se a temperatura oscila pouco.">info</span></span>
                 <span class="hf-val" id="hf-stability">100%</span>
               </div>
               <div class="hf-bar-bg">
@@ -271,7 +271,7 @@
             <div class="health-factor-item">
               <div class="hf-header">
                 <span class="material-icons-round hf-icon">my_location</span>
-                <span class="hf-label">Distância do Setpoint</span>
+                <span class="hf-label">Perto da meta <span class="info-dot material-icons-round" title="Avalia se a temperatura atual está próxima da temperatura desejada.">info</span></span>
                 <span class="hf-val" id="hf-setpoint">100%</span>
               </div>
               <div class="hf-bar-bg">
@@ -282,7 +282,7 @@
             <div class="health-factor-item">
               <div class="hf-header">
                 <span class="material-icons-round hf-icon">electric_bolt</span>
-                <span class="hf-label">Saturação do Atuador</span>
+                <span class="hf-label">Esforço do sistema <span class="info-dot material-icons-round" title="Mostra se o aquecimento/resfriamento está trabalhando no limite.">info</span></span>
                 <span class="hf-val" id="hf-saturation">100%</span>
               </div>
               <div class="hf-bar-bg">
@@ -293,7 +293,7 @@
             <div class="health-factor-item">
               <div class="hf-header">
                 <span class="material-icons-round hf-icon">ssid_chart</span>
-                <span class="hf-label">Oscilações do Atuador</span>
+                <span class="hf-label">Controle suave <span class="info-dot material-icons-round" title="Avalia se o controle automático está evitando correções bruscas.">info</span></span>
                 <span class="hf-val" id="hf-oscillation">100%</span>
               </div>
               <div class="hf-bar-bg">
@@ -332,7 +332,7 @@
       <section class="anl-section" id="section-anomalies">
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-anomaly">warning_amber</span>
-          <h2>Detecção de Anomalias</h2>
+          <h2>Alertas <span class="info-dot material-icons-round" title="Mostra somente situações que exigem atenção ou investigação.">info</span></h2>
           <span class="anl-count-badge" id="alerts-count">0</span>
           <span class="anl-count-label">alertas ativos</span>
         </div>
@@ -371,10 +371,10 @@
       <!-- ════════════════════════════════
            Seção 4 – Mini Gráfico Histórico
       ═════════════════════════════════ -->
-      <section class="anl-section" id="section-minigraph">
+      <section class="anl-section secondary-section" id="section-minigraph">
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-graph">show_chart</span>
-          <h2>Histórico (últimos 5 min)</h2>
+          <h2>Histórico visual <span class="info-dot material-icons-round" title="Contexto visual dos últimos minutos para análise técnica.">info</span></h2>
         </div>
         <div id="anl-chart-container"></div>
       </section>

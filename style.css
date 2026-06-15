@@ -63,6 +63,7 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  letter-spacing: 0 !important;
   margin: 0;
   padding: 0;
 }
@@ -125,7 +126,7 @@ header {
 .logo-area h1 {
   font-size: var(--size-title);
   font-weight: 600;
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
   color: var(--text-primary);
 }
 
@@ -264,6 +265,33 @@ header {
   font-size: 14px;
 }
 
+.info-dot {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 11px !important;
+  line-height: 1;
+  cursor: help;
+  vertical-align: middle;
+  opacity: 0.9;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.info-dot:hover,
+.info-dot:focus-visible {
+  color: var(--text-primary);
+  border-color: var(--color-stable);
+  background-color: rgba(16, 185, 129, 0.12);
+  outline: none;
+}
+
 /* KPIs de Telemetria */
 .telemetry-row {
   display: grid;
@@ -287,6 +315,9 @@ header {
   text-transform: uppercase;
   color: var(--text-muted);
   letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .kpi-box .kpi-value {
@@ -294,7 +325,7 @@ header {
   font-size: var(--size-kpi);
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
 }
 
 /* Cores de Status Dinâmicas para Textos */
@@ -734,24 +765,8 @@ input:checked+.slider:before {
 
   /* Remove o prefixo longo e deixa apenas o nome principal do reator */
   .logo-area h1 {
-    font-size: 16px;          /* Diminui o tamanho da fonte */
+    font-size: 18px;          /* Diminui o tamanho da fonte */
     white-space: nowrap;       /* Evita quebras de linha estranhas */
-  }
-  
-  .logo-area h1::before {
-    content: "Reator ";       /* Altera dinamicamente o texto longo para caber na tela */
-  }
-  
-  /* Esconde o texto "Gêmeo Digital – Reator Térmico" original para usar o compacto */
-  .logo-area h1 {
-    font-size: 0px; 
-  }
-  
-  .logo-area h1::after {
-    content: "Gêmeo Digital – Reator Térmico";
-    font-size: 15px;          /* Tamanho ideal para leitura mobile */
-    font-weight: 600;
-    color: var(--text-primary);
   }
 
   /* Oculta elementos que poluem a tela no celular para economizar espaço vertical */
@@ -933,6 +948,10 @@ body.analytics-page {
   gap: 12px;
 }
 
+.secondary-section {
+  opacity: 0.88;
+}
+
 .anl-section-header {
   display: flex;
   align-items: center;
@@ -1020,13 +1039,16 @@ body.analytics-page {
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .forecast-kpi-value {
   font-family: var(--font-mono);
   font-size: 22px;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   line-height: 1.1;
   transition: color var(--transition-fast), text-shadow var(--transition-fast);
 }
@@ -1092,6 +1114,9 @@ body.analytics-page {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .trend-display {
@@ -1119,7 +1144,7 @@ body.analytics-page {
   font-size: 16px;
   font-weight: 600;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: 0;
 }
 
 /* ══════════════════════════════════════════════════════════
@@ -1178,7 +1203,7 @@ body.analytics-page {
   font-family: var(--font-mono);
   font-size: 24px;
   font-weight: 700;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   transition: color var(--transition-fast);
 }
 
@@ -1226,6 +1251,9 @@ body.analytics-page {
   color: var(--text-muted);
   font-weight: 500;
   flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
 
 .hf-val {
@@ -1591,13 +1619,17 @@ body.analytics-page {
 /* Telemetria Grid de Alta Densidade */
 .telemetry-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 6px;
 }
 
 .telemetry-grid .kpi-box {
   padding: 6px;
   min-height: 52px;
+}
+
+.telemetry-grid .optional-kpi {
+  display: none;
 }
 
 .telemetry-grid .main-kpi {

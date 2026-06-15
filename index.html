@@ -3,8 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gêmeo Digital – Painel de Operação Térmica</title>
-    <meta name="description" content="Painel de operação do Gêmeo Digital: controle PID em tempo real do reator térmico com visualização 3D." />
+    <title>TermoGuard – Operação do Reator</title>
+    <meta name="description" content="TermoGuard: acompanhamento simples do gêmeo digital do reator térmico com visualização 3D." />
 
     <!-- Estilos e Fontes -->
     <link
@@ -31,8 +31,8 @@
       <div class="logo-area">
         <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
         <div>
-          <h1>Gêmeo Digital – Reator Térmico</h1>
-          <div class="reactor-location">Usina Nuclear Angra II • Setor de Geração Térmica • Reator #AN2-R4</div>
+          <h1>TermoGuard</h1>
+          <div class="reactor-location">Gêmeo digital do reator térmico • Angra II • Reator #AN2-R4</div>
         </div>
         <span class="badge-live">Live Simulator</span>
       </div>
@@ -76,7 +76,7 @@
           </button>
           <button class="sub-tab-btn" data-tab="realtime">
             <span class="material-icons-round">show_chart</span>
-            <span>Dados TR</span>
+            <span>Histórico</span>
           </button>
           <button class="sub-tab-btn" data-tab="sensors">
             <span class="material-icons-round">sensors</span>
@@ -97,41 +97,44 @@
           <!-- Telemetria Analítica (KPIs) -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Telemetria Atual</h2>
+              <h2>
+                Leituras essenciais
+                <span class="info-dot material-icons-round" title="Mostra apenas os dados necessários para entender o estado atual do reator. Os dados técnicos completos ficam nas abas Histórico e Sensores.">info</span>
+              </h2>
               <span id="decision-indicator" class="status-header-indicator ind-stable"></span>
             </div>
 
             <div class="telemetry-grid">
               <div class="kpi-box main-kpi">
-                <span class="kpi-label">Temp. do Líquido</span>
+                <span class="kpi-label">Temperatura <span class="info-dot material-icons-round" title="Temperatura atual do fluido dentro do reator. É o principal indicador de segurança.">info</span></span>
                 <div class="kpi-value text-stable" id="temp-liquid-val">--.- °C</div>
               </div>
-              <div class="kpi-box">
-                <span class="kpi-label">Temp. Ambiente</span>
+              <div class="kpi-box optional-kpi">
+                <span class="kpi-label">Temp. Ambiente <span class="info-dot material-icons-round" title="Temperatura externa usada pelo modelo para calcular perda de calor.">info</span></span>
                 <div class="kpi-value" id="temp-ambient-val">--.- °C</div>
               </div>
               <div class="kpi-box">
-                <span class="kpi-label">Temp. Alvo</span>
+                <span class="kpi-label">Meta <span class="info-dot material-icons-round" title="Temperatura que o sistema tenta manter automaticamente.">info</span></span>
                 <div class="kpi-value" id="temp-target">--.- °C</div>
               </div>
               <div class="kpi-box">
-                <span class="kpi-label">Potência Aplicada</span>
+                <span class="kpi-label">Ação do Sistema <span class="info-dot material-icons-round" title="Mostra quanto o controle automático está aquecendo ou resfriando para chegar na meta.">info</span></span>
                 <div class="kpi-value" id="actuator-power">--.- %</div>
               </div>
-              <div class="kpi-box">
-                <span class="kpi-label">Potência Líquida</span>
+              <div class="kpi-box optional-kpi">
+                <span class="kpi-label">Potência Líquida <span class="info-dot material-icons-round" title="Resultado físico estimado entre aquecimento, resfriamento e perdas térmicas.">info</span></span>
                 <div class="kpi-value" id="net-power-val">--.- W</div>
               </div>
               <div class="kpi-box">
-                <span class="kpi-label">Pressão Interna</span>
+                <span class="kpi-label">Pressão <span class="info-dot material-icons-round" title="Pressão interna do recipiente. Valores altos podem indicar risco operacional.">info</span></span>
                 <div class="kpi-value" id="pressure-val">--.-- bar</div>
               </div>
-              <div class="kpi-box">
-                <span class="kpi-label">Vibração Estrutural</span>
+              <div class="kpi-box optional-kpi">
+                <span class="kpi-label">Vibração <span class="info-dot material-icons-round" title="Leitura estrutural usada para detectar instabilidade mecânica.">info</span></span>
                 <div class="kpi-value" id="vibration-val">--.-- mm/s</div>
               </div>
-              <div class="kpi-box circuit-kpi">
-                <span class="kpi-label">Circuito Térmico</span>
+              <div class="kpi-box circuit-kpi optional-kpi">
+                <span class="kpi-label">Circuito Térmico <span class="info-dot material-icons-round" title="Indica se o sistema está aquecendo, resfriando ou parado.">info</span></span>
                 <div class="circuit-badge badge-inactive" id="shared-circuit-val">INATIVO</div>
               </div>
             </div>
@@ -139,7 +142,7 @@
             <!-- Barra de Progresso de Potência do Atuador -->
             <div class="power-bar-container">
               <div class="power-bar-header">
-                <span>FLUXO TÉRMICO DO ATUADOR</span>
+                <span>Ação automática</span>
                 <span id="power-bar-val">INATIVO</span>
               </div>
               <div class="power-bar-bg">
@@ -150,7 +153,7 @@
             <!-- Saúde Inline – link para a página de Analytics -->
             <a href="./analytics.html" class="health-inline-link" title="Ver Analytics completo">
               <span class="material-icons-round">favorite</span>
-              <span>Saúde do Fluidos:</span>
+              <span>Saúde do sistema</span>
               <span id="health-badge" class="health-inline-badge health-excellent">100%</span>
               <span class="material-icons-round health-inline-arrow">chevron_right</span>
             </a>
@@ -160,20 +163,21 @@
           <div class="dashboard-card decision-card status-stable" id="decision-card">
             <div class="card-header">
               <h2>
-                <span class="material-icons-round">analytics</span> Diagnóstico Operacional
+                <span class="material-icons-round">analytics</span> Diagnóstico
+                <span class="info-dot material-icons-round" title="Resumo em linguagem direta: estado atual, nível de risco e ação recomendada.">info</span>
               </h2>
             </div>
             <div class="decision-grid">
               <div class="decision-item">
-                <span class="label">Status do Reator</span>
+                <span class="label">Estado</span>
                 <span class="desc" id="decision-status">Aguardando dados...</span>
               </div>
               <div class="decision-item">
-                <span class="label">Risco do Sistema</span>
+                <span class="label">Risco</span>
                 <span class="desc" id="decision-risk">Não calculado.</span>
               </div>
               <div class="decision-item">
-                <span class="label">Recomendação / Ação Requerida</span>
+                <span class="label">Ação recomendada</span>
                 <span class="desc" id="decision-action">Nenhuma ação recomendada.</span>
               </div>
             </div>
@@ -182,7 +186,7 @@
           <!-- Controles Rápidos -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2><span class="material-icons-round">settings</span> Painel de Controle Rápido</h2>
+              <h2><span class="material-icons-round">settings</span> Controle rápido</h2>
             </div>
             <div class="controls-group">
               <!-- Master Power Liga/Desliga Geral -->
@@ -192,7 +196,7 @@
 
               <!-- Controle Segmentado de Modo de Operação (Pills) -->
               <div class="mode-selector-container">
-                <span class="selector-title">Modo de Operação:</span>
+                <span class="selector-title">Modo:</span>
                 <div class="segmented-control">
                   <button class="btn segment-btn" id="mode-eco-btn">ECO / STANDBY</button>
                   <button class="btn segment-btn active" id="mode-pid-btn">MODO PID ATIVO</button>
@@ -202,7 +206,7 @@
               <!-- Ajuste de temperatura alvo -->
               <div class="control-item">
                 <label for="temp-slider">
-                  <span id="texto-ajustar">Ajustar Setpoint do Líquido</span>
+                  <span id="texto-ajustar">Temperatura desejada</span>
                   <span id="temp-slider-val" class="val">--°C</span>
                 </label>
                 <div class="slider-row">
@@ -215,12 +219,12 @@
           </div>
         </div>
 
-        <!-- ════════ Sub-Aba 2: Dados TR ════════ -->
+        <!-- ════════ Sub-Aba 2: Histórico ════════ -->
         <div class="sub-tab-panel" id="panel-realtime">
           <!-- Gráfico de Tendência (p5.js) -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Gráfico de Tendência Temporal</h2>
+              <h2>Variação recente <span class="info-dot material-icons-round" title="Ajuda a ver se a temperatura está subindo, caindo ou estabilizando.">info</span></h2>
             </div>
             <div id="telemetry-chart-container"></div>
           </div>
@@ -228,7 +232,7 @@
           <!-- Tabela de Histórico Recente -->
           <div class="dashboard-card" style="flex: 1;">
             <div class="card-header">
-              <h2>Histórico Tabular Recente</h2>
+              <h2>Últimas leituras técnicas <span class="info-dot material-icons-round" title="Registro técnico para conferência. Não é necessário acompanhar em operação normal.">info</span></h2>
             </div>
             <div class="table-container">
               <table class="realtime-data-table">
@@ -258,7 +262,7 @@
           <!-- Sensores Imersos no Líquido -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Sensores Imersos no Líquido</h2>
+              <h2>Sensores internos <span class="info-dot material-icons-round" title="Sensores dentro do fluido. Úteis para manutenção e validação das leituras.">info</span></h2>
             </div>
             <div class="sensors-list-group">
               
@@ -310,7 +314,7 @@
           <!-- Sensores Fora do Recipiente -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Sensores Fora do Recipiente</h2>
+              <h2>Sensores externos <span class="info-dot material-icons-round" title="Sensores do casco e do ambiente. Úteis para investigar falhas ou comportamento fora do normal.">info</span></h2>
             </div>
             <div class="sensors-list-group">
               
@@ -374,7 +378,7 @@
           <!-- Controle de Alarme e Simulação -->
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Painel de Segurança e Alarmes</h2>
+              <h2>Segurança e alarmes <span class="info-dot material-icons-round" title="Controles de alarme e simulação de falha para testar a resposta do sistema.">info</span></h2>
             </div>
             <div class="alerts-controls">
               <button class="btn btn-alarm-action" id="mute-alarm-btn">
@@ -389,7 +393,7 @@
           <!-- Lista de Alertas Ativos -->
           <div class="dashboard-card" style="flex: 1;">
             <div class="card-header">
-              <h2>Histórico de Anomalias Ativas</h2>
+              <h2>Alertas ativos <span class="info-dot material-icons-round" title="Lista apenas problemas que exigem atenção agora.">info</span></h2>
             </div>
             <div class="alerts-list" id="panel-alerts-list">
               <!-- Dinâmico via JS -->
@@ -401,7 +405,7 @@
         <div class="sub-tab-panel" id="panel-settings">
           <div class="dashboard-card">
             <div class="card-header">
-              <h2>Parâmetros Físicos e Controle PID</h2>
+              <h2>Ajustes avançados <span class="info-dot material-icons-round" title="Parâmetros técnicos do controle automático. Use apenas se souber o efeito de cada ajuste.">info</span></h2>
             </div>
             <div class="settings-form-group">
               <div class="setting-row">

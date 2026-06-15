@@ -1,12 +1,12 @@
-# 🔬 Gêmeo Digital – Reator Térmico
+# TermoGuard
 
-> **Simulador de Gêmeo Digital de Reator Térmico** com controle PID em tempo real, visualização 3D, análise preditiva e sistema de alertas integrado.
+> **Aplicativo de monitoramento do gêmeo digital do reator térmico** com controle PID em tempo real, visualização 3D, análise preditiva e sistema de alertas integrado.
 
 ---
 
 ## 📋 Visão Geral
 
-O **Gêmeo Digital do Reator Térmico** é uma aplicação web interativa que simula em tempo real o comportamento físico-termodinâmico de um reator de aquecimento/resfriamento, reproduzindo fielmente:
+O **TermoGuard** é uma aplicação web interativa que simula em tempo real o comportamento físico-termodinâmico de um reator de aquecimento/resfriamento, reproduzindo fielmente:
 
 - **Dinâmica térmica** do fluido contido no reator (sensores imersos e externos)
 - **Controle automático PID** para manutenção da temperatura alvo
@@ -263,14 +263,14 @@ Em seguida, acesse: `http://localhost:8080`
 | **Botão PID / ECO**         | Alterna entre controle automático e modo standby |
 | **Slider Temperatura Alvo** | Define o setpoint do controlador PID           |
 | **Aba Visão Geral**         | KPIs principais e canvas 3D                    |
-| **Aba Dados TR**            | Gráfico histórico em tempo real               |
+| **Aba Histórico**           | Gráfico histórico em tempo real               |
 | **Aba Sensores**            | Status detalhado de todos os sensores          |
 | **Aba Alertas**             | Log de eventos e anomalias ativas              |
 | **Aba Configurações**       | Ajuste dos parâmetros PID                      |
 
 ### Página Analytics (`analytics.html`)
 - **Seção 1 – Previsão Térmica**: KPIs de temperatura e previsão futura por regressão linear
-- **Seção 2 – Sensores Físicos e Ambientais**: Temperatura ambiente, pressão, vibração, potência
+- **Seção 2 – Dados técnicos**: Temperatura ambiente, pressão, vibração e potência para análise detalhada
 - **Seção 3 – Saúde do Sistema**: Índice de saúde com 4 fatores ponderados
 - **Seção 4 – Anomalias Ativas**: Lista de alertas em tempo real com severidade
 
