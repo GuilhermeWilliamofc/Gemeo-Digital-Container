@@ -1,4 +1,4 @@
-# TermoGuard
+# ThermosTwin
 
 > **Aplicativo de monitoramento do gêmeo digital do reator térmico** com controle PID em tempo real, visualização 3D, análise preditiva e sistema de alertas integrado.
 
@@ -6,7 +6,7 @@
 
 ## 📋 Visão Geral
 
-O **TermoGuard** é uma aplicação web interativa que simula em tempo real o comportamento físico-termodinâmico de um reator de aquecimento/resfriamento, reproduzindo fielmente:
+O **ThermosTwin** é uma aplicação web interativa que simula em tempo real o comportamento físico-termodinâmico de um reator de aquecimento/resfriamento, reproduzindo fielmente:
 
 - **Dinâmica térmica** do fluido contido no reator (sensores imersos e externos)
 - **Controle automático PID** para manutenção da temperatura alvo
@@ -218,6 +218,12 @@ Gemeo Digital Container/
     └── favicon.png           # Ícone da aplicação
 ```
 
+## 🧾 Diagrama PlantUML
+
+O arquivo `documentacao.puml` contém o diagrama de arquitetura e fluxo de dados do sistema.
+
+![Diagrama de Arquitetura e Fluxo de Dados](docs/documentacao.png)
+
 ---
 
 ## 🚀 Como Executar
@@ -314,7 +320,3 @@ O estado do sistema é salvo automaticamente via `localStorage` a cada segundo. 
 ## 📝 Licença
 
 Este projeto foi desenvolvido como um demonstrador técnico de Gêmeo Digital. Todos os dados de localização, nomes de usinas e identificadores são **fictícios** e utilizados apenas para fins de simulação educacional.
-
----
-
-*Desenvolvido com ❤️ como parte de um projeto de Gêmeo Digital de Reator Térmico.*

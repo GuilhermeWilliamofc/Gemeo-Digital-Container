@@ -111,6 +111,19 @@ header {
   z-index: 10;
 }
 
+#title-gradient {
+    font-weight: bolder;
+}
+
+#title-gradient span:first-child {
+  color: #60A5FA; /* Azul claro */
+  
+}
+
+#title-gradient span:last-child {
+  color: #EF4444; /* Vermelho */
+}
+
 .logo-area {
   display: flex;
   align-items: center;
