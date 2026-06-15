@@ -24,7 +24,10 @@
     <header>
       <div class="logo-area">
         <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
-        <h1>Gêmeo Digital – Reator Térmico</h1>
+        <div>
+          <h1>Gêmeo Digital – Reator Térmico</h1>
+          <div class="reactor-location">Usina Nuclear Angra II • Setor de Geração Térmica • Reator #AN2-R4</div>
+        </div>
         <span class="badge-live">Analytics</span>
       </div>
 
@@ -72,16 +75,16 @@
         <!-- KPIs de Temperatura -->
         <div class="forecast-kpi-grid">
 
-          <!-- Temperatura Atual -->
-          <div class="forecast-card forecast-now" title="Leitura atual do sensor de temperatura">
+          <!-- Temperatura do Líquido -->
+          <div class="forecast-card forecast-now" title="Leitura atual do sensor de temperatura do líquido">
             <div class="forecast-card-header">
               <span class="material-icons-round fc-icon">thermostat</span>
-              <span class="fc-label">Temperatura Atual</span>
+              <span class="fc-label">Temp. do Líquido</span>
             </div>
             <div class="forecast-kpi-value kpi-stable" id="anl-temp-now">--.- °C</div>
             <div class="forecast-card-footer">
               <span class="material-icons-round">circle</span>
-              <span>Leitura em tempo real</span>
+              <span>Leitura em tempo real do fluido</span>
             </div>
           </div>
 
@@ -137,9 +140,94 @@
       </section>
 
       <!-- ════════════════════════════════
-           Seção 2 – Saúde do Sistema
+           Seção 2 – Sensores Físicos e Ambientais
+      ═════════════════════════════════ -->
+      <section class="anl-section" id="section-sensors">
+        <div class="anl-section-header">
+          <span class="material-icons-round section-icon icon-forecast" style="color:#34D399">sensors</span>
+          <h2>Sensores Físicos e Ambientais</h2>
+        </div>
+        <div class="forecast-kpi-grid">
+
+          <!-- Temperatura Ambiente -->
+          <div class="forecast-card" title="Temperatura ambiente do local de instalação">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon" style="color:#60A5FA">wb_sunny</span>
+              <span class="fc-label">Temp. Ambiente</span>
+            </div>
+            <div class="forecast-kpi-value kpi-cold" id="anl-ambient-now">--.- °C</div>
+            <div class="forecast-card-footer">
+              <span class="material-icons-round">circle</span>
+              <span>Temperatura do ar local</span>
+            </div>
+          </div>
+
+          <!-- Pressão Interna -->
+          <div class="forecast-card" title="Pressão interna do container calculada">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon" style="color:#FBBF24">compress</span>
+              <span class="fc-label">Pressão Interna</span>
+            </div>
+            <div class="forecast-kpi-value" id="anl-pressure-now" style="color:#FBBF24">--.-- bar</div>
+            <div class="forecast-card-footer">
+              <span class="material-icons-round">circle</span>
+              <span>Limite seguro: 8.0 bar</span>
+            </div>
+          </div>
+
+          <!-- Vibração Estrutural -->
+          <div class="forecast-card" title="Vibração estrutural medida pelo acelerômetro">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon" style="color:#A78BFA">vibration</span>
+              <span class="fc-label">Vibração Estrutural</span>
+            </div>
+            <div class="forecast-kpi-value" id="anl-vibration-now" style="color:#A78BFA">--.-- mm/s</div>
+            <div class="forecast-card-footer">
+              <span class="material-icons-round">circle</span>
+              <span>Limite seguro: 2.5 mm/s</span>
+            </div>
+          </div>
+
+          <!-- Potência Líquida -->
+          <div class="forecast-card" title="Potência líquida efetiva do circuito de aquecimento/resfriamento">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon" style="color:#F87171">bolt</span>
+              <span class="fc-label">Potência Líquida</span>
+            </div>
+            <div class="forecast-kpi-value" id="anl-netpower-now" style="color:#F87171">--.-- W</div>
+            <div class="forecast-card-footer">
+              <span class="material-icons-round">circle</span>
+              <span>Circuito compartilhado</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Estado do Circuito Compartilhado -->
+        <div class="trend-panel">
+          <div class="trend-block">
+            <div class="trend-header">Circuito de Aquecimento/Resfriamento</div>
+            <div class="trend-display">
+              <span class="material-icons-round trend-icon trend-stable" id="anl-circuit-icon">device_thermostat</span>
+              <span class="trend-label trend-stable" id="anl-circuit-label">INATIVO</span>
+            </div>
+          </div>
+          <div class="trend-block">
+            <div class="trend-header">Potência Aplicada ao Atuador</div>
+            <div class="trend-meta-val" id="anl-power-val">0 %</div>
+          </div>
+          <div class="trend-block">
+            <div class="trend-header">Temperatura Alvo (Setpoint)</div>
+            <div class="trend-meta-val" id="anl-target-val">-- °C</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════
+           Seção 3 – Saúde do Sistema
       ═════════════════════════════════ -->
       <section class="anl-section" id="section-health">
+
         <div class="anl-section-header">
           <span class="material-icons-round section-icon icon-health">favorite</span>
           <h2>Saúde do Sistema</h2>

@@ -28,6 +28,16 @@ class AnalyticsView {
       slopeVal:   document.getElementById('anl-slope-val'),
       r2Val:      document.getElementById('anl-r2-val'),
 
+      // Sensores Físicos e Ambientais (nova seção)
+      ambientNow:    document.getElementById('anl-ambient-now'),
+      pressureNow:   document.getElementById('anl-pressure-now'),
+      vibrationNow:  document.getElementById('anl-vibration-now'),
+      netpowerNow:   document.getElementById('anl-netpower-now'),
+      circuitIcon:   document.getElementById('anl-circuit-icon'),
+      circuitLabel:  document.getElementById('anl-circuit-label'),
+      powerVal:      document.getElementById('anl-power-val'),
+      targetVal:     document.getElementById('anl-target-val'),
+
       // Saúde
       healthArc:         document.getElementById('health-arc'),
       healthVal:         document.getElementById('health-val'),
@@ -59,6 +69,7 @@ class AnalyticsView {
    */
   update() {
     this._updatePrediction();
+    this._updateSensors();
     this._updateHealth();
     this._updateAnomalies();
     this._updateMeta();
@@ -69,9 +80,12 @@ class AnalyticsView {
   // ─────────────────────────────────────────
   _updatePrediction() {
     const pred    = this.predEngine.result;
-    const current = this.model.tempSensor;
+    // Usa tempLiquid se disponível, senão fallback para tempSensor
+    const current = (this.model.tempLiquid !== undefined)
+      ? this.model.tempLiquid
+      : this.model.tempSensor;
 
-    // KPI: Temperatura Atual
+    // KPI: Temperatura do Líquido
     if (this.dom.tempNow) {
       this.dom.tempNow.textContent = current.toFixed(1) + ' °C';
       this.dom.tempNow.className   = 'forecast-kpi-value ' + this._tempClass(current);
@@ -115,6 +129,69 @@ class AnalyticsView {
     if (this.dom.trendLabel) { this.dom.trendLabel.textContent = t.label; this.dom.trendLabel.className = 'trend-label ' + t.cls; }
     if (this.dom.slopeVal)   this.dom.slopeVal.textContent  = (pred.slope >= 0 ? '+' : '') + pred.slope.toFixed(3) + ' °C/s';
     if (this.dom.r2Val)      this.dom.r2Val.textContent     = (pred.r2 * 100).toFixed(1) + '%';
+  }
+
+  // ─────────────────────────────────────────
+  //  Sensores Físicos e Ambientais
+  // ─────────────────────────────────────────
+  _updateSensors() {
+    const m = this.model;
+
+    // Temperatura Ambiente
+    if (this.dom.ambientNow) {
+      const amb = (m.ambientTemp !== undefined) ? m.ambientTemp : 25.0;
+      this.dom.ambientNow.textContent = amb.toFixed(1) + ' °C';
+    }
+
+    // Pressão Interna
+    if (this.dom.pressureNow) {
+      const pressure = (m.pressure !== undefined) ? m.pressure : 1.0;
+      const isPressureHigh = pressure > 7.0;
+      this.dom.pressureNow.textContent = pressure.toFixed(2) + ' bar';
+      this.dom.pressureNow.style.color = isPressureHigh ? '#EF4444' : '#FBBF24';
+    }
+
+    // Vibração Estrutural
+    if (this.dom.vibrationNow) {
+      const vib = (m.vibration !== undefined) ? m.vibration : 0.0;
+      const isVibHigh = vib > 2.0;
+      this.dom.vibrationNow.textContent = vib.toFixed(2) + ' mm/s';
+      this.dom.vibrationNow.style.color = isVibHigh ? '#EF4444' : '#A78BFA';
+    }
+
+    // Potência Líquida
+    if (this.dom.netpowerNow) {
+      const net = (m.netPower !== undefined) ? m.netPower : 0.0;
+      this.dom.netpowerNow.textContent = net.toFixed(2) + ' W';
+      this.dom.netpowerNow.style.color = net > 0 ? '#F87171' : net < 0 ? '#60A5FA' : '#9CA3AF';
+    }
+
+    // Circuito de Aquecimento/Resfriamento
+    if (this.dom.circuitIcon && this.dom.circuitLabel) {
+      const state = (m.sharedCircuitState !== undefined) ? m.sharedCircuitState : 'INATIVO';
+      const circuitMap = {
+        'AQUECIMENTO': { icon: 'local_fire_department', label: 'AQUECENDO',   cls: 'trend-heating' },
+        'RESFRIAMENTO': { icon: 'ac_unit',              label: 'RESFRIANDO',  cls: 'trend-cooling' },
+        'INATIVO':     { icon: 'device_thermostat',     label: 'INATIVO',     cls: 'trend-stable'  },
+      };
+      const c = circuitMap[state] || circuitMap['INATIVO'];
+      this.dom.circuitIcon.textContent  = c.icon;
+      this.dom.circuitIcon.className    = 'material-icons-round trend-icon ' + c.cls;
+      this.dom.circuitLabel.textContent = c.label;
+      this.dom.circuitLabel.className   = 'trend-label ' + c.cls;
+    }
+
+    // Potência Aplicada (actuatorPower já está em %)
+    if (this.dom.powerVal) {
+      const pwr = (m.actuatorPower !== undefined) ? Math.abs(m.actuatorPower).toFixed(0) : 0;
+      this.dom.powerVal.textContent = pwr + ' %';
+    }
+
+    // Temperatura Alvo
+    if (this.dom.targetVal) {
+      const target = (m.tempTarget !== undefined) ? m.tempTarget : '--';
+      this.dom.targetVal.textContent = (typeof target === 'number') ? target.toFixed(1) + ' °C' : '-- °C';
+    }
   }
 
   // ─────────────────────────────────────────

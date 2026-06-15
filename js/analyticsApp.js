@@ -1,7 +1,7 @@
 /**
  * AnalyticsApp.js – Ponto de Entrada da Página de Analytics
  * Instancia e orquestra todos os engines e a view de analytics.
- * Restaura o estado salvo pelo Painel Principal via sessionStorage.
+ * Restaura o estado salvo pelo Painel Principal via localStorage.
  */
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -23,11 +23,17 @@
     <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
   </head>
   <body>
+    <!-- Overlay Visual para Alarmes Críticos (Piscante) -->
+    <div id="alarm-flashing-overlay" class="alarm-flash-screen" style="display:none;"></div>
+
     <!-- Cabeçalho Principal -->
     <header>
       <div class="logo-area">
         <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
-        <h1>Gêmeo Digital – Reator Térmico</h1>
+        <div>
+          <h1>Gêmeo Digital – Reator Térmico</h1>
+          <div class="reactor-location">Usina Nuclear Angra II • Setor de Geração Térmica • Reator #AN2-R4</div>
+        </div>
         <span class="badge-live">Live Simulator</span>
       </div>
 
@@ -43,7 +49,7 @@
       </div>
     </header>
 
-    <!-- Navegação por Abas -->
+    <!-- Navegação por Abas Principais -->
     <nav class="dashboard-tabs" aria-label="Navegação do Dashboard">
       <a href="./index.html" class="tab-item tab-active" id="tab-main" aria-current="page">
         <span class="material-icons-round">dashboard</span>
@@ -59,152 +65,365 @@
 
     <!-- Corpo do Dashboard -->
     <main class="dashboard-grid">
-      <!-- Coluna Esquerda: Telemetria, Apoio à Decisão e Controles -->
+      <!-- Coluna Esquerda: Telemetria, Apoio à Decisão e Controles por sub-abas -->
       <section class="control-sidebar">
-        <!-- Telemetria Analítica (KPIs) -->
-        <div class="dashboard-card">
-          <div class="card-header">
-            <h2>Telemetria Atual</h2>
-            <span
-              id="decision-indicator"
-              class="status-header-indicator ind-stable"
-            ></span>
-          </div>
-
-          <div class="telemetry-row">
-            <div class="kpi-box">
-              <span class="kpi-label">Temp. Sensor</span>
-              <div class="kpi-value text-stable" id="temp-current">--.- °C</div>
-            </div>
-            <div class="kpi-box">
-              <span class="kpi-label">Temp. Alvo</span>
-              <div class="kpi-value" id="temp-target">--.- °C</div>
-            </div>
-            <div class="kpi-box">
-              <span class="kpi-label">Atuador (PID)</span>
-              <div class="kpi-value" id="actuator-power">--.- %</div>
-            </div>
-          </div>
-
-          <!-- Barra de Progresso de Potência do Atuador -->
-          <div class="power-bar-container">
-            <div class="power-bar-header">
-              <span>FLUXO TÉRMICO DO ATUADOR</span>
-              <span id="power-bar-val">INATIVO</span>
-            </div>
-            <div class="power-bar-bg">
-              <div id="power-bar-fill" class="power-bar-fill"></div>
-            </div>
-          </div>
-
-          <!-- Saúde Inline – link para a página de Analytics -->
-          <a href="./analytics.html" class="health-inline-link" title="Ver Analytics completo">
-            <span class="material-icons-round">favorite</span>
-            <span>Saúde:</span>
-            <span id="health-badge" class="health-inline-badge health-excellent">100%</span>
-            <span class="material-icons-round health-inline-arrow">chevron_right</span>
-          </a>
+        
+        <!-- Menu de Sub-Abas -->
+        <div class="sub-tabs-nav">
+          <button class="sub-tab-btn active" data-tab="overview">
+            <span class="material-icons-round">dashboard</span>
+            <span>Visão Geral</span>
+          </button>
+          <button class="sub-tab-btn" data-tab="realtime">
+            <span class="material-icons-round">show_chart</span>
+            <span>Dados TR</span>
+          </button>
+          <button class="sub-tab-btn" data-tab="sensors">
+            <span class="material-icons-round">sensors</span>
+            <span>Sensores</span>
+          </button>
+          <button class="sub-tab-btn" data-tab="alerts">
+            <span class="material-icons-round">report_problem</span>
+            <span>Alertas</span>
+          </button>
+          <button class="sub-tab-btn" data-tab="settings">
+            <span class="material-icons-round">tune</span>
+            <span>Config</span>
+          </button>
         </div>
 
-        <div class="side-by-side-row">
-          <!-- Centro de Apoio à Decisão (UX Decisivo) -->
-          <div
-            class="dashboard-card decision-card status-stable"
-            id="decision-card"
-          >
+        <!-- ════════ Sub-Aba 1: Visão Geral ════════ -->
+        <div class="sub-tab-panel active" id="panel-overview">
+          <!-- Telemetria Analítica (KPIs) -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Telemetria Atual</h2>
+              <span id="decision-indicator" class="status-header-indicator ind-stable"></span>
+            </div>
+
+            <div class="telemetry-grid">
+              <div class="kpi-box main-kpi">
+                <span class="kpi-label">Temp. do Líquido</span>
+                <div class="kpi-value text-stable" id="temp-liquid-val">--.- °C</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Temp. Ambiente</span>
+                <div class="kpi-value" id="temp-ambient-val">--.- °C</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Temp. Alvo</span>
+                <div class="kpi-value" id="temp-target">--.- °C</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Potência Aplicada</span>
+                <div class="kpi-value" id="actuator-power">--.- %</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Potência Líquida</span>
+                <div class="kpi-value" id="net-power-val">--.- W</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Pressão Interna</span>
+                <div class="kpi-value" id="pressure-val">--.-- bar</div>
+              </div>
+              <div class="kpi-box">
+                <span class="kpi-label">Vibração Estrutural</span>
+                <div class="kpi-value" id="vibration-val">--.-- mm/s</div>
+              </div>
+              <div class="kpi-box circuit-kpi">
+                <span class="kpi-label">Circuito Térmico</span>
+                <div class="circuit-badge badge-inactive" id="shared-circuit-val">INATIVO</div>
+              </div>
+            </div>
+
+            <!-- Barra de Progresso de Potência do Atuador -->
+            <div class="power-bar-container">
+              <div class="power-bar-header">
+                <span>FLUXO TÉRMICO DO ATUADOR</span>
+                <span id="power-bar-val">INATIVO</span>
+              </div>
+              <div class="power-bar-bg">
+                <div id="power-bar-fill" class="power-bar-fill"></div>
+              </div>
+            </div>
+
+            <!-- Saúde Inline – link para a página de Analytics -->
+            <a href="./analytics.html" class="health-inline-link" title="Ver Analytics completo">
+              <span class="material-icons-round">favorite</span>
+              <span>Saúde do Fluidos:</span>
+              <span id="health-badge" class="health-inline-badge health-excellent">100%</span>
+              <span class="material-icons-round health-inline-arrow">chevron_right</span>
+            </a>
+          </div>
+
+          <!-- Centro de Apoio à Decisão -->
+          <div class="dashboard-card decision-card status-stable" id="decision-card">
             <div class="card-header">
               <h2>
-                <span class="material-icons-round">analytics</span> Status
+                <span class="material-icons-round">analytics</span> Diagnóstico Operacional
               </h2>
             </div>
             <div class="decision-grid">
               <div class="decision-item">
-                <span class="label">O que está acontecendo?</span>
-                <span class="desc" id="decision-status"
-                  >Aguardando dados...</span
-                >
+                <span class="label">Status do Reator</span>
+                <span class="desc" id="decision-status">Aguardando dados...</span>
               </div>
               <div class="decision-item">
-                <span class="label">Qual é o risco operacional?</span>
+                <span class="label">Risco do Sistema</span>
                 <span class="desc" id="decision-risk">Não calculado.</span>
               </div>
               <div class="decision-item">
-                <span class="label">Ação imediata recomendada</span>
-                <span class="desc" id="decision-action"
-                  >Nenhuma ação recomendada.</span
-                >
+                <span class="label">Recomendação / Ação Requerida</span>
+                <span class="desc" id="decision-action">Nenhuma ação recomendada.</span>
               </div>
             </div>
           </div>
 
+          <!-- Controles Rápidos -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2><span class="material-icons-round">settings</span> Painel de Controle Rápido</h2>
+            </div>
+            <div class="controls-group">
+              <!-- Master Power Liga/Desliga Geral -->
+              <div class="master-power-container">
+                <button class="btn btn-master-power btn-power-on" id="master-power-btn">DESLIGAR REATOR</button>
+              </div>
+
+              <!-- Controle Segmentado de Modo de Operação (Pills) -->
+              <div class="mode-selector-container">
+                <span class="selector-title">Modo de Operação:</span>
+                <div class="segmented-control">
+                  <button class="btn segment-btn" id="mode-eco-btn">ECO / STANDBY</button>
+                  <button class="btn segment-btn active" id="mode-pid-btn">MODO PID ATIVO</button>
+                </div>
+              </div>
+
+              <!-- Ajuste de temperatura alvo -->
+              <div class="control-item">
+                <label for="temp-slider">
+                  <span id="texto-ajustar">Ajustar Setpoint do Líquido</span>
+                  <span id="temp-slider-val" class="val">--°C</span>
+                </label>
+                <div class="slider-row">
+                  <img src="./images/frio.png" alt="Frio" class="cold-indicator" />
+                  <input type="range" id="temp-slider" min="0" max="150" value="70" />
+                  <img src="./images/calor.png" alt="Calor" class="hot-indicator" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════ Sub-Aba 2: Dados TR ════════ -->
+        <div class="sub-tab-panel" id="panel-realtime">
           <!-- Gráfico de Tendência (p5.js) -->
-          <div id="telemetry-chart-container"></div>
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Gráfico de Tendência Temporal</h2>
+            </div>
+            <div id="telemetry-chart-container"></div>
+          </div>
+
+          <!-- Tabela de Histórico Recente -->
+          <div class="dashboard-card" style="flex: 1;">
+            <div class="card-header">
+              <h2>Histórico Tabular Recente</h2>
+            </div>
+            <div class="table-container">
+              <table class="realtime-data-table">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Temp. Líq.</th>
+                    <th>Pressão</th>
+                    <th>Vibração</th>
+                    <th>Pot. Aplicada</th>
+                    <th>Pot. Líquida</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody id="realtime-data-table-body">
+                  <tr>
+                    <td colspan="7" style="text-align: center; color: var(--text-muted);">Carregando telemetria...</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
 
-        <!-- Painel de Controle e Comandos -->
-        <div class="dashboard-card">
-          <div class="card-header">
-            <h2>
-              <span class="material-icons-round">settings</span> Painel de
-              Comando
-            </h2>
+        <!-- ════════ Sub-Aba 3: Sensores ════════ -->
+        <div class="sub-tab-panel" id="panel-sensors">
+          <!-- Sensores Imersos no Líquido -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Sensores Imersos no Líquido</h2>
+            </div>
+            <div class="sensors-list-group">
+              
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">waves</span>
+                  <div>
+                    <div class="sensor-title">Sensor Térmico Principal (T1)</div>
+                    <div class="sensor-desc">Termopar tipo K imerso no fluxo central</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-immersed-t1-val">--.- °C</span>
+                  <span class="status-indicator status-off" id="sensor-immersed-t1-status">INATIVO</span>
+                </div>
+              </div>
+
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">waves</span>
+                  <div>
+                    <div class="sensor-title">Sensor Térmico Reserva (T2)</div>
+                    <div class="sensor-desc">Termopar redundante para proteção cruzada</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-immersed-t2-val">--.- °C</span>
+                  <span class="status-indicator status-off" id="sensor-immersed-t2-status">INATIVO</span>
+                </div>
+              </div>
+
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">opacity</span>
+                  <div>
+                    <div class="sensor-title">Sensor de Nível do Líquido</div>
+                    <div class="sensor-desc">Transmissor acústico de nível do vaso</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-immersed-level-val">--.- %</span>
+                  <span class="status-indicator status-off" id="sensor-immersed-level-status">INATIVO</span>
+                </div>
+              </div>
+
+            </div>
           </div>
-          <div class="controls-group">
-            <!-- Toggle liga/desliga geral -->
-            <div class="switch-container">
-              <span class="toggle-label">SISTEMA ATIVO</span>
-              <label class="switch">
-                <input type="checkbox" id="power-toggle" checked />
-                <span class="slider"></span>
-              </label>
+
+          <!-- Sensores Fora do Recipiente -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Sensores Fora do Recipiente</h2>
             </div>
+            <div class="sensors-list-group">
+              
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">monitor_heart</span>
+                  <div>
+                    <div class="sensor-title">Temperatura Externa do Casco</div>
+                    <div class="sensor-desc">Sensor infravermelho montado na parede externa</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-ext-shell-val">--.- °C</span>
+                  <span class="status-indicator status-off" id="sensor-ext-shell-status">INATIVO</span>
+                </div>
+              </div>
 
-            <!-- Ajuste de temperatura alvo -->
-            <div class="control-item">
-              <label
-                for="temp-slider"
-                style="display: flex; align-items: center; gap: 10px"
-              >
-                <span id="texto-ajustar">Ajustar Temperatura Alvo</span>
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">vibration</span>
+                  <div>
+                    <div class="sensor-title">Acelerômetro de Vibração</div>
+                    <div class="sensor-desc">Sensor piezoelétrico de ressonância do chassi</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-ext-vibration-val">--.-- mm/s</span>
+                  <span class="status-indicator status-off" id="sensor-ext-vibration-status">INATIVO</span>
+                </div>
+              </div>
 
-                <!-- Indicadores alinhados nas extremidades -->
-                <img
-                  src="./images/frio.png"
-                  alt="Frio"
-                  class="cold-indicator"
-                  style="margin-left: auto"
-                />
-                <input
-                  type="range"
-                  id="temp-slider"
-                  min="0"
-                  max="150"
-                  value="70"
-                />
-                <img
-                  src="./images/calor.png"
-                  alt="Calor"
-                  class="hot-indicator"
-                  style="margin-right: auto"
-                />
+              <div class="sensor-detail-item">
+                <div class="sensor-info">
+                  <span class="material-icons-round s-icon">compress</span>
+                  <div>
+                    <div class="sensor-title">Sensor de Pressão Atmosférica</div>
+                    <div class="sensor-desc">Célula barométrica externa do container</div>
+                  </div>
+                </div>
+                <div class="sensor-values">
+                  <span class="sensor-num-val" id="sensor-ext-pressure-val">--.-- bar</span>
+                  <span class="status-indicator status-off" id="sensor-ext-pressure-status">INATIVO</span>
+                </div>
+              </div>
 
-                <span id="temp-slider-val" class="val">--°C</span>
-              </label>
             </div>
+          </div>
+        </div>
 
-            <!-- Botões de ação e segurança -->
-            <div class="btn-grid">
+        <!-- ════════ Sub-Aba 4: Alertas ════════ -->
+        <div class="sub-tab-panel" id="panel-alerts">
+          <!-- Banner de SCRAM de Segurança -->
+          <div class="scram-active-banner" id="scram-banner" style="display:none;">
+            <span class="material-icons-round animate-blink">report</span>
+            <div>
+              <h3>SCRAM AUTOMÁTICO ATIVO</h3>
+              <p>O sistema de segurança desativou o reator porque a temperatura do líquido superou o limite crítico de 140 °C.</p>
+            </div>
+          </div>
+
+          <!-- Controle de Alarme e Simulação -->
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Painel de Segurança e Alarmes</h2>
+            </div>
+            <div class="alerts-controls">
+              <button class="btn btn-alarm-action" id="mute-alarm-btn">
+                <span class="material-icons-round">volume_up</span> Silenciar
+              </button>
               <button class="btn btn-fail" id="fail-btn">
-                <span class="material-icons-round">warning_amber</span> Falha
-                Térmica
-              </button>
-              <button class="btn btn-emergency" id="emergency-btn">
-                <span class="material-icons-round">power_settings_new</span>
-                Reset / Desligar
+                <span class="material-icons-round">warning_amber</span> Simular Falha
               </button>
             </div>
           </div>
+
+          <!-- Lista de Alertas Ativos -->
+          <div class="dashboard-card" style="flex: 1;">
+            <div class="card-header">
+              <h2>Histórico de Anomalias Ativas</h2>
+            </div>
+            <div class="alerts-list" id="panel-alerts-list">
+              <!-- Dinâmico via JS -->
+            </div>
+          </div>
         </div>
+
+        <!-- ════════ Sub-Aba 5: Configurações ════════ -->
+        <div class="sub-tab-panel" id="panel-settings">
+          <div class="dashboard-card">
+            <div class="card-header">
+              <h2>Parâmetros Físicos e Controle PID</h2>
+            </div>
+            <div class="settings-form-group">
+              <div class="setting-row">
+                <label for="config-kp">Ganho Proporcional (Kp)</label>
+                <input type="number" id="config-kp" step="0.1" value="4.5">
+              </div>
+              <div class="setting-row">
+                <label for="config-ki">Ganho Integral (Ki)</label>
+                <input type="number" id="config-ki" step="0.01" value="0.04">
+              </div>
+              <div class="setting-row">
+                <label for="config-kd">Ganho Derivativo (Kd)</label>
+                <input type="number" id="config-kd" step="0.1" value="1.5">
+              </div>
+              <div class="setting-row">
+                <label for="config-ambient">Temperatura Ambiente Base (°C)</label>
+                <input type="number" id="config-ambient" step="0.5" value="25.0">
+              </div>
+            </div>
+          </div>
+        </div>
+
       </section>
 
       <!-- Coluna Direita: Visualização 3D (Three.js) -->

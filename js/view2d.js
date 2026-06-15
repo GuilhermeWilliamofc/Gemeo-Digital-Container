@@ -273,11 +273,11 @@ class TelemetryChartView2D {
         const row1_Y = 0;
         const row2_Y = 17;
 
-        // Legenda 1: Temperatura Atual
+        // Legenda 1: Temperatura do Líquido
         p.fill(lineCol);
         p.rect(padLeft, row1_Y + 2, 8, 8, 2);
         p.fill(248, 250, 252);
-        p.text("Temp. Atual (" + currentTemp.toFixed(1) + "°C)", padLeft + 12, row1_Y);
+        p.text("Temp. Líquido (" + currentTemp.toFixed(1) + "°C)", padLeft + 12, row1_Y);
 
         if (isMobile) {
           const halfChart = chartW / 2;
@@ -290,7 +290,7 @@ class TelemetryChartView2D {
           p.fill(245, 158, 11);
           p.rect(padLeft + halfChart, row2_Y + 2, 8, 8, 2);
           p.fill(248, 250, 252);
-          p.text("Atuador (" + history[totalPoints - 1].power.toFixed(0) + "%)", padLeft + halfChart + 12, row2_Y);
+          p.text("Pot. Aplicada (" + history[totalPoints - 1].power.toFixed(0) + "%)", padLeft + halfChart + 12, row2_Y);
         } else {
           // Legenda 2: Temperatura Alvo
           p.fill(16, 185, 129);
@@ -298,11 +298,11 @@ class TelemetryChartView2D {
           p.fill(248, 250, 252);
           p.text("Alvo (" + history[totalPoints - 1].target.toFixed(0) + "°C)", padLeft + 172, row1_Y);
 
-          // Legenda 3: Potência do Atuador
+          // Legenda 3: Potência Aplicada
           p.fill(245, 158, 11);
           p.rect(padLeft + 270, row1_Y + 2, 8, 8, 2);
           p.fill(248, 250, 252);
-          p.text("Atuador (" + history[totalPoints - 1].power.toFixed(0) + "%)", padLeft + 282, row1_Y);
+          p.text("Pot. Aplicada (" + history[totalPoints - 1].power.toFixed(0) + "%)", padLeft + 282, row1_Y);
 
           // Legenda 4: Projeção (se disponível)
           if (this.predEngine) {

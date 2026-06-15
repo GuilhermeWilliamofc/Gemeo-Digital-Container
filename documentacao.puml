@@ -1,0 +1,247 @@
+@startuml Gemeo_Digital_Reator_Termico
+!theme vibrant
+
+title Gêmeo Digital – Reator Térmico\nDiagrama de Arquitetura e Fluxo de Dados
+
+' ─── Configuração Visual ─────────────────────────────────────────────────────
+skinparam backgroundColor #0f172a
+skinparam defaultFontColor #e2e8f0
+skinparam defaultFontSize 13
+skinparam defaultFontName "Segoe UI"
+
+skinparam package {
+  BackgroundColor #1e293b
+  BorderColor #334155
+  FontColor #94a3b8
+  FontStyle bold
+}
+
+skinparam class {
+  BackgroundColor #1e293b
+  BorderColor #3b82f6
+  FontColor #e2e8f0
+  AttributeFontColor #94a3b8
+  HeaderBackgroundColor #1d4ed8
+  HeaderFontColor #ffffff
+}
+
+skinparam arrow {
+  Color #60a5fa
+  FontColor #94a3b8
+}
+
+skinparam note {
+  BackgroundColor #1e293b
+  BorderColor #6366f1
+  FontColor #a5b4fc
+}
+
+' ─── Pacotes e Classes ───────────────────────────────────────────────────────
+
+package "📄 Páginas HTML" #1a2640 {
+  class "index.html\n(Dashboard Principal)" as INDEX {
+    + Navegação por sub-abas
+    + Canvas 3D (WebGL / p5.js)
+    + Gráfico Histórico 2D
+    + Controles Master Power
+    + Painel de Alertas
+    + Configurações PID
+  }
+  class "analytics.html\n(Analytics & Previsão)" as ANALYTICS {
+    + Previsão Térmica (+10s/+30s/+60s)
+    + Sensores Físicos e Ambientais
+    + Índice de Saúde do Sistema
+    + Anomalias Ativas
+  }
+}
+
+package "🧠 Modelo e Controlador" #1a2640 {
+
+  class "ThermalModel\n(model.js)" as MODEL {
+    ' Estado Geral
+    + masterPower : boolean
+    + systemOn : boolean
+    + isFailed : boolean
+    -- Sensores Térmicos --
+    + tempCurrent : float
+    + tempLiquid : float
+    + tempSensor : float
+    + ambientTemp : float
+    + tempTarget : float
+    -- Sensores Físicos --
+    + pressure : float
+    + vibration : float
+    + netPower : float
+    + actuatorPower : float
+    -- Sub-sensores --
+    + sensorsImmersed : {t1, t2, level}
+    + sensorsExternal : {tShell, vibration, pressure}
+    -- Histórico --
+    + history[] : ponto circular
+    + healthIndex : int
+    -- Controlador PID --
+    + Kp, Ki, Kd : float
+    + integralSum : float
+    + lastError : float
+    -- Métodos --
+    + update(dt) : void
+    + saveState() : void
+    + loadState() : boolean
+  }
+
+  class "DashboardController\n(controller.js)" as CTRL {
+    + model : ThermalModel
+    -- Controles --
+    + toggleMasterPower() : void
+    + toggleSystemMode() : void
+    + setTemperatureTarget(val) : void
+    + switchSubTab(name) : void
+    -- Segurança --
+    - checkSCRAM() : void
+    - triggerAlarm(type) : void
+    + SCRAM_TEMP : 140.0
+    + ALERT_TEMP : 115.0
+  }
+}
+
+package "📊 Engines de Análise" #1a2640 {
+  class "PredictionEngine\n(prediction.js)" as PRED {
+    + model : ThermalModel
+    + result : {t10s, t30s, t60s, slope, r2, trend}
+    + update() : void
+    - linearRegression(data) : {slope, intercept, r2}
+  }
+
+  class "HealthEngine\n(health.js)" as HEALTH {
+    + model : ThermalModel
+    + result : {index, label, levelClass, factors}
+    + update() : void
+    - calcStability() : float
+    - calcSetpoint() : float
+    - calcSaturation() : float
+    - calcOscillation() : float
+  }
+
+  class "AnomalyEngine\n(anomaly.js)" as ANOMALY {
+    + model : ThermalModel
+    + activeAlerts : Alert[]
+    + update() : void
+    - checkTemperature() : void
+    - checkPressure() : void
+    - checkVibration() : void
+    - checkPIDSaturation() : void
+  }
+}
+
+package "🖥️ Camada de Visualização" #1a2640 {
+  class "View3D\n(view3d.js)" as VIEW3D {
+    + model : ThermalModel
+    + setup() : void
+    + draw() : void
+    - renderContainer() : void
+    - renderFluid() : void
+    - renderTemperatureGradient() : void
+    - renderAlertFX() : void
+  }
+
+  class "TelemetryChartView2D\n(view2d.js)" as VIEW2D {
+    + model : ThermalModel
+    + predEngine : PredictionEngine
+    + chart : Chart
+    - updateChart() : void
+    ' Dataset: Temp. Líquido + Pot. Aplicada
+    + datasets : ["Temp. Líquido", "Pot. Aplicada"]
+  }
+
+  class "AnalyticsView\n(analyticsView.js)" as ANLVIEW {
+    + model : ThermalModel
+    + predEngine : PredictionEngine
+    + healthEngine : HealthEngine
+    + anomalyEngine : AnomalyEngine
+    + update() : void
+    - _updatePrediction() : void
+    - _updateSensors() : void
+    - _updateHealth() : void
+    - _updateAnomalies() : void
+    - _updateMeta() : void
+  }
+}
+
+package "💾 Persistência" #1a2640 {
+  class "localStorage\n(Browser API)" as STORAGE {
+    + "reactor_state" : JSON
+    --
+    tempCurrent, tempLiquid
+    tempSensor, tempTarget
+    ambientTemp, pressure
+    vibration, netPower
+    actuatorPower, systemOn
+    masterPower, isFailed
+    history[], healthIndex
+  }
+}
+
+' ─── Relacionamentos ─────────────────────────────────────────────────────────
+
+INDEX --> CTRL : instancia e usa
+INDEX --> VIEW3D : renderiza canvas 3D
+INDEX --> VIEW2D : renderiza gráfico 2D
+
+ANALYTICS --> ANLVIEW : instancia e usa
+ANALYTICS --> PRED : engine de previsão
+ANALYTICS --> HEALTH : engine de saúde
+ANALYTICS --> ANOMALY : engine de anomalias
+
+CTRL --> MODEL : lê/escreve estado
+CTRL ..> STORAGE : saveState() cada 1s
+
+MODEL --> STORAGE : saveState() / loadState()
+STORAGE ..> MODEL : restaura estado entre páginas
+
+VIEW3D --> MODEL : lê tempLiquid, actuatorPower
+VIEW2D --> MODEL : lê history[]
+VIEW2D --> PRED : exibe previsão no gráfico
+
+ANLVIEW --> MODEL : lê todos os sensores
+ANLVIEW --> PRED : exibe previsões
+ANLVIEW --> HEALTH : exibe índice de saúde
+ANLVIEW --> ANOMALY : exibe alertas
+
+PRED --> MODEL : lê history[]
+HEALTH --> MODEL : lê tempSensor, actuatorPower
+ANOMALY --> MODEL : lê pressure, vibration, tempSensor
+
+' ─── Notas de Fluxo de Dados ─────────────────────────────────────────────────
+
+note top of MODEL
+  **Fonte de Verdade (Singleton)**
+  Compartilhado via window.ThermalModel
+  Persistido em localStorage
+  Atualizado a ~60 FPS via requestAnimationFrame
+end note
+
+note right of ANOMALY
+  **Limiares de Segurança:**
+  • Temperatura: 115°C (aviso) / 140°C (SCRAM)
+  • Pressão: > 7.0 bar (crítico)
+  • Vibração: > 2.0 mm/s (atenção)
+  • PID Saturação: |atuador| > 95% por > 30s
+end note
+
+note bottom of STORAGE
+  **Persistência cross-page:**
+  Salvo a cada 1s pelo controller ativo.
+  Restaurado no DOMContentLoaded de ambas as páginas.
+  Mantém sessão após fechamento do navegador.
+end note
+
+note left of CTRL
+  **Controles de Usuário:**
+  • Master Power (verde=OFF / vermelho=ON)
+  • Modo PID vs ECO/Standby
+  • Slider de temperatura alvo
+  • Sub-abas: Visão Geral, Dados TR,
+    Sensores, Alertas, Configurações
+end note
+
+@enduml
