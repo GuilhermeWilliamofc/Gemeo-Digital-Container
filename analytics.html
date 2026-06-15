@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gêmeo Digital – Analytics & Previsão</title>
+    <meta name="description" content="Painel de analytics do Gêmeo Digital: previsão térmica, saúde do sistema e detecção de anomalias em tempo real." />
+
+    <!-- Fontes e Ícones -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet" />
+    <link rel="stylesheet" href="./style.css" />
+
+    <!-- Dependências Externas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+  </head>
+  <body class="analytics-page">
+
+    <!-- ═══════════════════════════════════════
+         Cabeçalho Principal
+    ════════════════════════════════════════ -->
+    <header>
+      <div class="logo-area">
+        <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
+        <h1>Gêmeo Digital – Reator Térmico</h1>
+        <span class="badge-live">Analytics</span>
+      </div>
+
+      <div class="connection-meta">
+        <div class="meta-item">
+          <span class="material-icons-round">wifi</span>
+          Sinal: <span id="signal">100.0% Estável</span>
+        </div>
+        <div class="meta-item">
+          <span class="material-icons-round">schedule</span>
+          Frame: <span id="timestamp">--:--:--.---</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- ═══════════════════════════════════════
+         Navegação por Abas
+    ════════════════════════════════════════ -->
+    <nav class="dashboard-tabs" aria-label="Navegação do Dashboard">
+      <a href="./index.html" class="tab-item" id="tab-main">
+        <span class="material-icons-round">dashboard</span>
+        <span>Painel Principal</span>
+      </a>
+      <a href="./analytics.html" class="tab-item tab-active" id="tab-analytics" aria-current="page">
+        <span class="material-icons-round">analytics</span>
+        <span>Analytics</span>
+      </a>
+    </nav>
+
+    <!-- ═══════════════════════════════════════
+         Corpo Principal da Página Analytics
+    ════════════════════════════════════════ -->
+    <main class="analytics-main">
+
+      <!-- ════════════════════════════════
+           Seção 1 – Previsão Térmica
+      ═════════════════════════════════ -->
+      <section class="anl-section" id="section-forecast">
+        <div class="anl-section-header">
+          <span class="material-icons-round section-icon icon-forecast">query_stats</span>
+          <h2>Previsão Térmica</h2>
+          <div class="section-badge" id="alerts-badge" style="display:none;">0</div>
+        </div>
+
+        <!-- KPIs de Temperatura -->
+        <div class="forecast-kpi-grid">
+
+          <!-- Temperatura Atual -->
+          <div class="forecast-card forecast-now" title="Leitura atual do sensor de temperatura">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon">thermostat</span>
+              <span class="fc-label">Temperatura Atual</span>
+            </div>
+            <div class="forecast-kpi-value kpi-stable" id="anl-temp-now">--.- °C</div>
+            <div class="forecast-card-footer">
+              <span class="material-icons-round">circle</span>
+              <span>Leitura em tempo real</span>
+            </div>
+          </div>
+
+          <!-- Previsão +10s -->
+          <div class="forecast-card" id="anl-temp-10" title="Temperatura estimada em 10 segundos">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon">timer_10</span>
+              <span class="fc-label">Previsto em 10s</span>
+            </div>
+            <div class="forecast-kpi-value kpi-stable">--.- °C</div>
+            <div class="forecast-delta delta-flat">+0.0°</div>
+          </div>
+
+          <!-- Previsão +30s -->
+          <div class="forecast-card" id="anl-temp-30" title="Temperatura estimada em 30 segundos">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon">timer_30</span>
+              <span class="fc-label">Previsto em 30s</span>
+            </div>
+            <div class="forecast-kpi-value kpi-stable">--.- °C</div>
+            <div class="forecast-delta delta-flat">+0.0°</div>
+          </div>
+
+          <!-- Previsão +60s -->
+          <div class="forecast-card" id="anl-temp-60" title="Temperatura estimada em 60 segundos">
+            <div class="forecast-card-header">
+              <span class="material-icons-round fc-icon">timer</span>
+              <span class="fc-label">Previsto em 60s</span>
+            </div>
+            <div class="forecast-kpi-value kpi-stable">--.- °C</div>
+            <div class="forecast-delta delta-flat">+0.0°</div>
+          </div>
+        </div>
+
+        <!-- Painel de Tendência -->
+        <div class="trend-panel">
+          <div class="trend-block">
+            <div class="trend-header">Tendência Atual</div>
+            <div class="trend-display">
+              <span class="material-icons-round trend-icon trend-stable" id="anl-trend-icon">trending_flat</span>
+              <span class="trend-label trend-stable" id="anl-trend-label">Estável</span>
+            </div>
+          </div>
+          <div class="trend-block">
+            <div class="trend-header">Taxa de Variação</div>
+            <div class="trend-meta-val" id="anl-slope-val">+0.000 °C/s</div>
+          </div>
+          <div class="trend-block">
+            <div class="trend-header">Confiança da Previsão (R²)</div>
+            <div class="trend-meta-val" id="anl-r2-val">-- %</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ════════════════════════════════
+           Seção 2 – Saúde do Sistema
+      ═════════════════════════════════ -->
+      <section class="anl-section" id="section-health">
+        <div class="anl-section-header">
+          <span class="material-icons-round section-icon icon-health">favorite</span>
+          <h2>Saúde do Sistema</h2>
+        </div>
+
+        <div class="health-layout">
+
+          <!-- Gauge Circular SVG -->
+          <div class="health-gauge-wrap">
+            <svg class="health-gauge-svg" viewBox="0 0 120 120" aria-label="Indicador de saúde do sistema">
+              <!-- Trilha de fundo -->
+              <circle class="gauge-track" cx="60" cy="60" r="54" />
+              <!-- Arco de progresso -->
+              <circle
+                class="gauge-arc"
+                id="health-arc"
+                cx="60" cy="60" r="54"
+                style="stroke-dashoffset: 0;"
+              />
+            </svg>
+            <div class="health-gauge-inner">
+              <div class="health-percent health-excellent" id="health-val">100%</div>
+              <div class="health-classification health-excellent" id="health-label">Excelente</div>
+            </div>
+          </div>
+
+          <!-- Fatores Detalhados -->
+          <div class="health-factors">
+
+            <div class="health-factor-item">
+              <div class="hf-header">
+                <span class="material-icons-round hf-icon">waves</span>
+                <span class="hf-label">Estabilidade da Temperatura</span>
+                <span class="hf-val" id="hf-stability">100%</span>
+              </div>
+              <div class="hf-bar-bg">
+                <div class="hf-bar-fill" id="hbar-stability" style="width:100%;"></div>
+              </div>
+            </div>
+
+            <div class="health-factor-item">
+              <div class="hf-header">
+                <span class="material-icons-round hf-icon">my_location</span>
+                <span class="hf-label">Distância do Setpoint</span>
+                <span class="hf-val" id="hf-setpoint">100%</span>
+              </div>
+              <div class="hf-bar-bg">
+                <div class="hf-bar-fill" id="hbar-setpoint" style="width:100%;"></div>
+              </div>
+            </div>
+
+            <div class="health-factor-item">
+              <div class="hf-header">
+                <span class="material-icons-round hf-icon">electric_bolt</span>
+                <span class="hf-label">Saturação do Atuador</span>
+                <span class="hf-val" id="hf-saturation">100%</span>
+              </div>
+              <div class="hf-bar-bg">
+                <div class="hf-bar-fill" id="hbar-saturation" style="width:100%;"></div>
+              </div>
+            </div>
+
+            <div class="health-factor-item">
+              <div class="hf-header">
+                <span class="material-icons-round hf-icon">ssid_chart</span>
+                <span class="hf-label">Oscilações do Atuador</span>
+                <span class="hf-val" id="hf-oscillation">100%</span>
+              </div>
+              <div class="hf-bar-bg">
+                <div class="hf-bar-fill" id="hbar-oscillation" style="width:100%;"></div>
+              </div>
+            </div>
+
+          </div><!-- /health-factors -->
+
+          <!-- Legenda de Classificação -->
+          <div class="health-legend">
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#10B981;"></span>
+              <span>90–100% Excelente</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#3B82F6;"></span>
+              <span>70–89% Boa</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#F59E0B;"></span>
+              <span>50–69% Atenção</span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#EF4444;"></span>
+              <span>0–49% Crítica</span>
+            </div>
+          </div>
+
+        </div><!-- /health-layout -->
+      </section>
+
+      <!-- ════════════════════════════════
+           Seção 3 – Alertas de Anomalias
+      ═════════════════════════════════ -->
+      <section class="anl-section" id="section-anomalies">
+        <div class="anl-section-header">
+          <span class="material-icons-round section-icon icon-anomaly">warning_amber</span>
+          <h2>Detecção de Anomalias</h2>
+          <span class="anl-count-badge" id="alerts-count">0</span>
+          <span class="anl-count-label">alertas ativos</span>
+        </div>
+
+        <!-- Legenda dos tipos de anomalia -->
+        <div class="anomaly-types-legend">
+          <div class="atype-item">
+            <span class="material-icons-round" style="color:#EF4444;">local_fire_department</span>
+            <span>Sobreaquecimento</span>
+          </div>
+          <div class="atype-item">
+            <span class="material-icons-round" style="color:#F59E0B;">ssid_chart</span>
+            <span>Oscilação Excessiva</span>
+          </div>
+          <div class="atype-item">
+            <span class="material-icons-round" style="color:#F59E0B;">sensors_off</span>
+            <span>Sensor Suspeito</span>
+          </div>
+          <div class="atype-item">
+            <span class="material-icons-round" style="color:#F59E0B;">electric_bolt</span>
+            <span>Atuador Saturado</span>
+          </div>
+        </div>
+
+        <!-- Lista dinâmica de alertas -->
+        <div class="alerts-list" id="alerts-list">
+          <!-- Sem Alertas -->
+          <div class="no-alerts-msg" id="no-alerts-msg">
+            <span class="material-icons-round">check_circle</span>
+            <span>Nenhuma anomalia detectada</span>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ════════════════════════════════
+           Seção 4 – Mini Gráfico Histórico
+      ═════════════════════════════════ -->
+      <section class="anl-section" id="section-minigraph">
+        <div class="anl-section-header">
+          <span class="material-icons-round section-icon icon-graph">show_chart</span>
+          <h2>Histórico (últimos 5 min)</h2>
+        </div>
+        <div id="anl-chart-container"></div>
+      </section>
+
+    </main><!-- /analytics-main -->
+
+    <!-- Scripts (Ordem de dependência estrita) -->
+    <script src="./js/model.js"></script>
+    <script src="./js/prediction.js"></script>
+    <script src="./js/health.js"></script>
+    <script src="./js/anomaly.js"></script>
+    <script src="./js/analyticsView.js"></script>
+    <script src="./js/view2d.js"></script>
+    <script src="./js/analyticsApp.js"></script>
+  </body>
+</html>

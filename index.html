@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gêmeo Digital – Painel de Operação Térmica</title>
+    <meta name="description" content="Painel de operação do Gêmeo Digital: controle PID em tempo real do reator térmico com visualização 3D." />
+
+    <!-- Estilos e Fontes -->
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons+Round"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./style.css" />
+
+    <!-- Dependências Externas (CDNs Estáveis) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="images/favicon.png" type="image/x-icon" />
+  </head>
+  <body>
+    <!-- Cabeçalho Principal -->
+    <header>
+      <div class="logo-area">
+        <img src="./images/logotipo.png" alt="Logotipo" class="header-logo" />
+        <h1>Gêmeo Digital – Reator Térmico</h1>
+        <span class="badge-live">Live Simulator</span>
+      </div>
+
+      <div class="connection-meta">
+        <div class="meta-item">
+          <span class="material-icons-round">wifi</span>
+          Sinal: <span id="signal">100.0% Estável</span>
+        </div>
+        <div class="meta-item">
+          <span class="material-icons-round">schedule</span>
+          Frame: <span id="timestamp">--:--:--.--</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Navegação por Abas -->
+    <nav class="dashboard-tabs" aria-label="Navegação do Dashboard">
+      <a href="./index.html" class="tab-item tab-active" id="tab-main" aria-current="page">
+        <span class="material-icons-round">dashboard</span>
+        <span>Painel Principal</span>
+      </a>
+      <a href="./analytics.html" class="tab-item" id="tab-analytics">
+        <span class="material-icons-round">analytics</span>
+        <span>Analytics</span>
+        <!-- Badge de alertas ativos -->
+        <span id="alerts-badge-main" class="tab-alert-badge" style="display:none;">0</span>
+      </a>
+    </nav>
+
+    <!-- Corpo do Dashboard -->
+    <main class="dashboard-grid">
+      <!-- Coluna Esquerda: Telemetria, Apoio à Decisão e Controles -->
+      <section class="control-sidebar">
+        <!-- Telemetria Analítica (KPIs) -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>Telemetria Atual</h2>
+            <span
+              id="decision-indicator"
+              class="status-header-indicator ind-stable"
+            ></span>
+          </div>
+
+          <div class="telemetry-row">
+            <div class="kpi-box">
+              <span class="kpi-label">Temp. Sensor</span>
+              <div class="kpi-value text-stable" id="temp-current">--.- °C</div>
+            </div>
+            <div class="kpi-box">
+              <span class="kpi-label">Temp. Alvo</span>
+              <div class="kpi-value" id="temp-target">--.- °C</div>
+            </div>
+            <div class="kpi-box">
+              <span class="kpi-label">Atuador (PID)</span>
+              <div class="kpi-value" id="actuator-power">--.- %</div>
+            </div>
+          </div>
+
+          <!-- Barra de Progresso de Potência do Atuador -->
+          <div class="power-bar-container">
+            <div class="power-bar-header">
+              <span>FLUXO TÉRMICO DO ATUADOR</span>
+              <span id="power-bar-val">INATIVO</span>
+            </div>
+            <div class="power-bar-bg">
+              <div id="power-bar-fill" class="power-bar-fill"></div>
+            </div>
+          </div>
+
+          <!-- Saúde Inline – link para a página de Analytics -->
+          <a href="./analytics.html" class="health-inline-link" title="Ver Analytics completo">
+            <span class="material-icons-round">favorite</span>
+            <span>Saúde:</span>
+            <span id="health-badge" class="health-inline-badge health-excellent">100%</span>
+            <span class="material-icons-round health-inline-arrow">chevron_right</span>
+          </a>
+        </div>
+
+        <div class="side-by-side-row">
+          <!-- Centro de Apoio à Decisão (UX Decisivo) -->
+          <div
+            class="dashboard-card decision-card status-stable"
+            id="decision-card"
+          >
+            <div class="card-header">
+              <h2>
+                <span class="material-icons-round">analytics</span> Status
+              </h2>
+            </div>
+            <div class="decision-grid">
+              <div class="decision-item">
+                <span class="label">O que está acontecendo?</span>
+                <span class="desc" id="decision-status"
+                  >Aguardando dados...</span
+                >
+              </div>
+              <div class="decision-item">
+                <span class="label">Qual é o risco operacional?</span>
+                <span class="desc" id="decision-risk">Não calculado.</span>
+              </div>
+              <div class="decision-item">
+                <span class="label">Ação imediata recomendada</span>
+                <span class="desc" id="decision-action"
+                  >Nenhuma ação recomendada.</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico de Tendência (p5.js) -->
+          <div id="telemetry-chart-container"></div>
+        </div>
+
+        <!-- Painel de Controle e Comandos -->
+        <div class="dashboard-card">
+          <div class="card-header">
+            <h2>
+              <span class="material-icons-round">settings</span> Painel de
+              Comando
+            </h2>
+          </div>
+          <div class="controls-group">
+            <!-- Toggle liga/desliga geral -->
+            <div class="switch-container">
+              <span class="toggle-label">SISTEMA ATIVO</span>
+              <label class="switch">
+                <input type="checkbox" id="power-toggle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Ajuste de temperatura alvo -->
+            <div class="control-item">
+              <label
+                for="temp-slider"
+                style="display: flex; align-items: center; gap: 10px"
+              >
+                <span id="texto-ajustar">Ajustar Temperatura Alvo</span>
+
+                <!-- Indicadores alinhados nas extremidades -->
+                <img
+                  src="./images/frio.png"
+                  alt="Frio"
+                  class="cold-indicator"
+                  style="margin-left: auto"
+                />
+                <input
+                  type="range"
+                  id="temp-slider"
+                  min="0"
+                  max="150"
+                  value="70"
+                />
+                <img
+                  src="./images/calor.png"
+                  alt="Calor"
+                  class="hot-indicator"
+                  style="margin-right: auto"
+                />
+
+                <span id="temp-slider-val" class="val">--°C</span>
+              </label>
+            </div>
+
+            <!-- Botões de ação e segurança -->
+            <div class="btn-grid">
+              <button class="btn btn-fail" id="fail-btn">
+                <span class="material-icons-round">warning_amber</span> Falha
+                Térmica
+              </button>
+              <button class="btn btn-emergency" id="emergency-btn">
+                <span class="material-icons-round">power_settings_new</span>
+                Reset / Desligar
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Coluna Direita: Visualização 3D (Three.js) -->
+      <section class="visualizer-pane">
+        <canvas id="viewer"></canvas>
+        <div class="visualizer-overlay">
+          <span class="material-icons-round">3d_rotation</span>
+          <span>Arraste para rotacionar • Rola scroll para Zoom</span>
+        </div>
+      </section>
+    </main>
+
+    <!-- Carregamento Ordenado dos Scripts MVC -->
+    <script src="./js/model.js"></script>
+    <script src="./js/prediction.js"></script>
+    <script src="./js/health.js"></script>
+    <script src="./js/anomaly.js"></script>
+    <script src="./js/view3d.js"></script>
+    <script src="./js/view2d.js"></script>
+    <script src="./js/controller.js"></script>
+    <script src="./js/app.js"></script>
+  </body>
+</html>
